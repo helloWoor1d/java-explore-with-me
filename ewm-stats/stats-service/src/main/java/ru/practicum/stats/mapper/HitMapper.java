@@ -7,6 +7,8 @@ import ru.practicum.stats.model.ViewStatsDto;
 import ru.practicum.stats.model.EndpointHit;
 import ru.practicum.stats.model.ViewStats;
 
+import java.util.List;
+
 import static ru.practicum.stats.model.DateTimeFormat.DATE_TIME_FORMAT;
 
 @Mapper(componentModel = "spring")
@@ -17,4 +19,6 @@ public interface HitMapper {
     EndpointHit fromDto(EndpointHitDto dto);
 
     ViewStatsDto toDto(ViewStats stats);
+
+    List<ViewStatsDto> toDto(List<ViewStats> stats);
 }

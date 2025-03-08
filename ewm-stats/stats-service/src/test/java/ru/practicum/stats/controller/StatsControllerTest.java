@@ -1,6 +1,7 @@
 package ru.practicum.stats.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -35,23 +36,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest
 @Import(HitMapperImpl.class)
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class StatsControllerTest {
     private final MockMvc mvc;
     private final ObjectMapper objectMapper;
     private static HitMapper hitMapper;
 
     @InjectMocks
-    private StatsController controller;
+    private final StatsController controller;
 
     @MockBean
     private StatsService statsService;
-
-    public StatsControllerTest(@Autowired MockMvc mvc, @Autowired ObjectMapper objectMapper,
-                               @Autowired StatsController statsController) {
-        this.mvc = mvc;
-        this.objectMapper = objectMapper;
-        this.controller = statsController;
-    }
 
     @Test
     public void shouldHit() throws Exception {
