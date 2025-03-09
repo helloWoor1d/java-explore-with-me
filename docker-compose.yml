@@ -8,17 +8,21 @@ services:
     depends_on:
       ewm-db:
         condition: service_healthy
+      stats-service:
+        condition: service_started
 
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm-service
       - SPRING_DATASOURCE_USERNAME=mira
       - SPRING_DATASOURCE_PASSWORD=password
+      - STATS_SERVICE_URL=http://stats-service:9090
+
 
   ewm-db:
     container_name: ewm-service-db
     image: postgres:16.3-alpine
     ports:
-      - "5433:5432"
+      - "5440:5432"
     environment:
       - POSTGRES_DB=ewm-service
       - POSTGRES_USER=mira
@@ -47,7 +51,7 @@ services:
     container_name: ewm-stats-db
     image: postgres:16.3-alpine
     ports:
-      - "5434:5432"
+      - "5450:5432"
     environment:
       - POSTGRES_DB=ewm-stats
       - POSTGRES_USER=mira
