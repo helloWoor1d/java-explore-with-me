@@ -3,6 +3,8 @@ services:
     container_name: ewm-service
     build:
       ewm-service
+    restart:
+      on-failure
     ports:
       - "8080:8080"
     depends_on:
@@ -21,6 +23,8 @@ services:
   ewm-db:
     container_name: ewm-service-db
     image: postgres:16.3-alpine
+    volumes:
+      - ewm_service_data:/var/lib/postgresql/data
     ports:
       - "5440:5432"
     environment:
@@ -37,6 +41,8 @@ services:
     container_name: ewm-stats-server
     build:
       ewm-stats/stats-service
+    restart:
+      on-failure
     ports:
       - "9090:9090"
     depends_on:
@@ -50,6 +56,8 @@ services:
   stats-db:
     container_name: ewm-stats-db
     image: postgres:16.3-alpine
+    volumes:
+      - evm-stats_data:/var/lib/postgresql/data
     ports:
       - "5450:5432"
     environment:
@@ -61,3 +69,7 @@ services:
       timeout: 5s
       interval: 5s
       retries: 10
+
+volumes:
+  ewm_service_data:
+  evm-stats_data:

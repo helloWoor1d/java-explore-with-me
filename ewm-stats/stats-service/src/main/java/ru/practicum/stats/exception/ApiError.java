@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @Setter
 
 public class ApiError {
-    String status;
-    String reason;
-    String message;
-    LocalDateTime timestamp;
+    private String status;
+    private String reason;
+    private String message;
+    private LocalDateTime timestamp;
 }
