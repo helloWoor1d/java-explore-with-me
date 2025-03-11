@@ -1,12 +1,12 @@
 package ru.practicum.stats.service;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.stats.model.EndpointHit;
 import ru.practicum.stats.model.ViewStats;
-import ru.practicum.stats.repository.StatsRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,13 +16,9 @@ import static org.hamcrest.Matchers.is;
 
 @Transactional
 @SpringBootTest
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class StatsServiceTest {
     private final StatsService statsService;
-
-    public StatsServiceTest(@Autowired StatsService service,
-                            @Autowired StatsRepository repository) {
-        this.statsService = service;
-    }
 
     @Test
     public void shouldSaveHitAndGetStats() {

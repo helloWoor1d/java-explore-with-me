@@ -25,10 +25,10 @@ public class StatsService {
                                     List<String> uris, Boolean unique) {
         log.debug("Собрана статистика за период {} - {}. Только уникальные посещения ({})", start, end, unique);
         if (uris == null || uris.isEmpty()) {
-            if (unique) return repository.getAllStatsWithUniqueIp(start, end);
-            else return repository.getAllStats(start, end);
+            if (unique) return repository.getStatsByDateWithUniqueIp(start, end);
+            else return repository.getStatsByDate(start, end);
         } else {
-            if (unique) return repository.getStatsWithUniqueIp(start, end, uris);
+            if (unique) return repository.getStatsByUrisWithUniqueIp(start, end, uris);
             else return repository.getStatsByUris(start, end, uris);
         }
     }

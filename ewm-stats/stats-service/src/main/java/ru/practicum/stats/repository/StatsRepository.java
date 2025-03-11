@@ -30,9 +30,9 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
             "AND sh.uri IN :uris " +
             "GROUP BY sh.app, sh.uri " +
             "ORDER BY COUNT(DISTINCT sh.ip) DESC ")
-    List<ViewStats> getStatsWithUniqueIp(@Param("start") LocalDateTime start,
-                                         @Param("end") LocalDateTime end,
-                                         @Param("uris") List<String> uris);
+    List<ViewStats> getStatsByUrisWithUniqueIp(@Param("start") LocalDateTime start,
+                                               @Param("end") LocalDateTime end,
+                                               @Param("uris") List<String> uris);
 
     @Query("SELECT new ru.practicum.stats.model.ViewStats(sh.app, sh.uri, COUNT(DISTINCT sh.ip)) " +
             "FROM EndpointHit AS sh " +
@@ -40,15 +40,15 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
             "AND sh.timestamp >= :start " +
             "GROUP BY sh.app, sh.uri " +
             "ORDER BY COUNT(DISTINCT sh.ip) DESC ")
-    List<ViewStats> getAllStatsWithUniqueIp(@Param("start") LocalDateTime start,
-                                            @Param("end") LocalDateTime end);
+    List<ViewStats> getStatsByDateWithUniqueIp(@Param("start") LocalDateTime start,
+                                               @Param("end") LocalDateTime end);
 
     @Query("SELECT new ru.practicum.stats.model.ViewStats(sh.app, sh.uri, COUNT(*)) " +
             "FROM EndpointHit AS sh " +
             "WHERE sh.timestamp <= :end " +
             "AND sh.timestamp >= :start " +
             "GROUP BY sh.app, sh.uri " +
-            "ORDER BY COUNT(DISTINCT sh.ip) DESC ")
-    List<ViewStats> getAllStats(@Param("start") LocalDateTime start,
-                                @Param("end") LocalDateTime end);
+            "ORDER BY COUNT(*) DESC ")
+    List<ViewStats> getStatsByDate(@Param("start") LocalDateTime start,
+                                   @Param("end") LocalDateTime end);
 }
