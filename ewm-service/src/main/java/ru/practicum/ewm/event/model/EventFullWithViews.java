@@ -34,4 +34,5 @@ public class EventFullWithViews {
     private Boolean requestModeration;
     private Long confirmedRequests;
     private Long views;
+    private Long comments;
 }

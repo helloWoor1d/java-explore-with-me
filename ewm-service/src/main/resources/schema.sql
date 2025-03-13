@@ -78,3 +78,18 @@ CREATE TABLE IF NOT EXISTS events_compilations (
     CONSTRAINT fk_events_compilations_compilation_id
         FOREIGN KEY (compilation_id) REFERENCES compilations (id)
 );
+
+CREATE TABLE IF NOT EXISTS comments (
+    id        BIGINT GENERATED ALWAYS AS IDENTITY,
+    text      CHARACTER VARYING(2200)     NOT NULL,
+    author_id BIGINT                      NOT NULL,
+    event_id  BIGINT                      NOT NULL,
+    created   TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    deleted   BOOLEAN                     NOT NULL,
+    CONSTRAINT
+        pk_comments PRIMARY KEY (id),
+    CONSTRAINT fk_comments_author_id
+        FOREIGN KEY (author_id) REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_comments_event_id
+        FOREIGN KEY (event_id) REFERENCES events (id) ON DELETE CASCADE
+)

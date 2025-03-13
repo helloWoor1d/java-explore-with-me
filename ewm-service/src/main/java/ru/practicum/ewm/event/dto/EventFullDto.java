@@ -70,4 +70,7 @@ public class EventFullDto {
 
     @PositiveOrZero
     private Long views;
+
+    @PositiveOrZero
+    private Long comments;
 }

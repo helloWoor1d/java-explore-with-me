@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.ewm.comment.service.CommentService;
+import ru.practicum.ewm.comment.dto.CommentFullDto;
+import ru.practicum.ewm.comment.dto.mapper.CommentMapper;
 import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.EventShortDto;
 import ru.practicum.ewm.event.dto.mapper.EventDtoMapper;
@@ -29,7 +32,10 @@ import static ru.practicum.stats.model.DateTimeFormat.DATE_TIME_FORMATTER;
 @Slf4j
 public class EventPublicController {
     private final EventService eventService;
+    private final CommentService commentService;
+
     private final EventDtoMapper dtoMapper;
+    private final CommentMapper commentMapper;
 
     @GetMapping
     public List<EventShortDto> getEventsByFilter(@RequestParam(required = false) String text,
@@ -68,5 +74,14 @@ public class EventPublicController {
         log.debug("controller: получено событие (USER) с id {}", id);
         EventFullWithViews event = eventService.getEventPublic(id, request.getRequestURI(), request.getRemoteAddr());
         return dtoMapper.toEventFullDto(event);
+    }
+
+    @GetMapping("/{id}/comments")
+    public List<CommentFullDto> getComments(@PathVariable("id") Long id,
+                                            @RequestParam(defaultValue = "0") Integer from,
+                                            @RequestParam(defaultValue = "20") Integer size) {
+        log.debug("controller: получение комментариев (USER) к событию {}", id);
+        return commentMapper.toCommentFullDto(
+                commentService.getCommentsByUser(id, from, size));
     }
 }
