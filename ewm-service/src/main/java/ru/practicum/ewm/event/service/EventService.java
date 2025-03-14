@@ -10,6 +10,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.client.StatsClient;
+import ru.practicum.ewm.comment.model.Comment;
+import ru.practicum.ewm.comment.service.CommentService;
 import ru.practicum.ewm.event.dto.UpdateEventAdminRequest;
 import ru.practicum.ewm.event.dto.UpdateEventUserRequest;
 import ru.practicum.ewm.event.dto.enums.EventAdminStateAction;
@@ -53,6 +55,7 @@ public class EventService {
 
     private final UserService userService;
     private final EventRequestService requestService;
+    private final CommentService commentService;
     private final EventModelMapper modelMapper;
 
     private final EventRepository eventRepository;
@@ -71,12 +74,12 @@ public class EventService {
         return eventRepository.getAllByInitiatorId(userId, pageable);
     }
 
-    public Event getEvent(long userId, long eventId) {
+    public EventFullWithViews getEvent(long userId, long eventId) {
         userService.getUser(userId);
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(String.format("Событие с указанным id %d не найдено.", eventId)));
         log.debug("Получено событие по id {}, пользователем с id {}", eventId, userId);
-        return event;
+        return setViewsForEventsFull(List.of(event), false).getFirst();
     }
 
     public EventFullWithViews getEventPublic(long eventId, String uri, String userIp) {
@@ -94,13 +97,22 @@ public class EventService {
 
         List<EventRequest> requests = requestService.getConfirmedRequests(ids);
         List<ViewStatsDto> views = getEventsViews(ids, unique);
+        List<Comment> comments = commentService.getComments(ids);
         List<EventFullWithViews> eventsFull = modelMapper.toEventFullWithViews(events);
 
         Map<Long, Long> countRequest = requests.stream()
                 .collect(Collectors.groupingBy(
                         r -> r.getEvent().getId(), Collectors.counting()));
-        eventsFull.forEach(e -> e.setConfirmedRequests(
-                countRequest.getOrDefault(e.getId(), 0L)));
+
+        Map<Long, Long> countComments = comments.stream()
+                .collect(Collectors.groupingBy(
+                        c -> c.getEvent().getId(), Collectors.counting()));
+
+        eventsFull.forEach(e -> {
+            e.setConfirmedRequests(
+                    countRequest.getOrDefault(e.getId(), 0L));
+            e.setComments(countComments.getOrDefault(e.getId(), 0L));
+        });
 
         Map<String, Long> urisViews = views.stream()
                 .collect(Collectors.toMap(ViewStatsDto::getUri, ViewStatsDto::getHits));
@@ -147,7 +159,8 @@ public class EventService {
     public Event updateEventByUser(long userId, long eventId, UpdateEventUserRequest updatedRequest) {
         log.debug("Получен запрос на изменение события userId = {}, eventId = {}, parameters for update = {}", userId, eventId, updatedRequest);
         userService.getUser(userId);
-        Event eventForUpdate = getEvent(userId, eventId);
+        Event eventForUpdate = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException(String.format("Событие с указанным id %d не найдено.", eventId)));
 
         if (eventForUpdate.getState() == EventState.PUBLISHED) {
             throw new BadOperationException("Изменить можно только неопубликованное событие.");

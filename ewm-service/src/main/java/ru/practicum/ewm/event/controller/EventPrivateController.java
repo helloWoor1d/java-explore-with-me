@@ -19,6 +19,7 @@ import ru.practicum.ewm.event.dto.NewEventDto;
 import ru.practicum.ewm.event.dto.UpdateEventUserRequest;
 import ru.practicum.ewm.event.dto.mapper.EventDtoMapper;
 import ru.practicum.ewm.event.model.Event;
+import ru.practicum.ewm.event.model.EventFullWithViews;
 import ru.practicum.ewm.event.model.EventShort;
 import ru.practicum.ewm.event.service.EventService;
 import ru.practicum.ewm.eventrequest.dto.EventRequestStatusUpdateRequest;
@@ -65,8 +66,8 @@ public class EventPrivateController {
     @GetMapping("/{eventId}")
     public EventFullDto getEvent(@PathVariable Long userId, @PathVariable Long eventId) {
         log.debug("controller: получена полная информация о событии {} пользователем {}", eventId, userId);
-        Event event = eventService.getEvent(userId, eventId);
-        return dtoMapper.toFullDto(event);
+        EventFullWithViews event = eventService.getEvent(userId, eventId);
+        return dtoMapper.toEventFullDto(event);
     }
 
     @PatchMapping("/{eventId}")
@@ -88,8 +89,8 @@ public class EventPrivateController {
 
     @PatchMapping("/{eventId}/requests")
     public EventRequestStatusUpdateResult updateRequestsStatus(@PathVariable Long userId,
-                                                              @PathVariable Long eventId,
-                                                              @Valid @RequestBody EventRequestStatusUpdateRequest updateRequest) {
+                                                               @PathVariable Long eventId,
+                                                               @Valid @RequestBody EventRequestStatusUpdateRequest updateRequest) {
         log.debug("controller: изменение статуса запросов {} события {} пользователем {}", updateRequest, eventId, userId);
         List<EventRequest> requests = requestService.updateRequestsStatus(userId, eventId,
                 updateRequest.getRequestIds(), updateRequest.getStatus());

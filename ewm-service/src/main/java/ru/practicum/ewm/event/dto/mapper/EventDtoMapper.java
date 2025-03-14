@@ -8,7 +8,6 @@ import ru.practicum.ewm.category.service.CategoryService;
 import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.EventShortDto;
 import ru.practicum.ewm.event.dto.NewEventDto;
-import ru.practicum.ewm.event.dto.UpdateEventUserRequest;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.EventFullWithViews;
 import ru.practicum.ewm.event.model.EventShort;
@@ -34,13 +33,7 @@ public interface EventDtoMapper {
     @Mapping(target = "category", source = "event.category")
     EventFullDto toFullDto(Event event);
 
-    List<EventFullDto> toFullDto(List<Event> events);
-
     List<EventShortDto> toEventShortsDto(List<EventShort> events);
-
-    List<EventShortDto> fromEventToShortDto(List<Event> events);
-
-    Event fromUpdateDto(UpdateEventUserRequest request);
 
     List<EventShortDto> toEventShortDto(List<EventShortWithViews> event);
 
