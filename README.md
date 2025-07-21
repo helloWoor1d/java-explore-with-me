@@ -1,4 +1,4 @@
-# ExploreWithMe — Сервис событий и совместного досуга
+# ExploreWithMe — cервис событий и совместного досуга
 
 ## 📚 Оглавление <!-- omit in toc -->
 
@@ -26,7 +26,6 @@
 
 - Java 21
 - Spring Boot 3.2
-- Spring Security
 - PostgreSQL
 - Hibernate
 - Docker + Docker Compose
